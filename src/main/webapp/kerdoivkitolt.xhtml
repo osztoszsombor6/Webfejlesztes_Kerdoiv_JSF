@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" />
+        <p:panel header="Kerdoivek Listaja" id="list_kerd" toggleable="true">
+            <h:form id="kerdoivform">
+                <p:dataTable id="table" var="kerdoiv"
+                             value="#{kerdoivController.kerdoivLista}" 
+                             selectionMode="single"
+                             selection="#{kitoltesController.kitoltendoKerdoiv}"
+                             rowKey="#{kerdoiv.id}"
+                             tableStyle="width:auto">
+                    <p:ajax event="rowSelect" listener="#{kerdoivController.onRowSelect}" update=":kerdoivform"/>
+                    <p:column style="width:3rem">
+                        <f:facet name="header">#Id</f:facet>
+                        <h:outputText value="#{kerdoiv.id}" />
+                        
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Cim</f:facet>
+                        <h:outputText value="#{kerdoiv.title}"/>
+                    </p:column>
+                    <p:column>
+                        <p:button value="Kitöltés" disabled="#{kitoltesController.kitoltendoKerdoiv.id != kerdoiv.id }" outcome="/kitoltes.jsf"/>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>    
+        </p:panel>
+        
+    </ui:define>
+</ui:composition>
+</html>

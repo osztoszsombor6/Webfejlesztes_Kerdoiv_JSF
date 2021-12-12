@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" />
+        <p:panel header="Kerdoivek Listaja" id="list_kerd" toggleable="true">
+            <h:form id="kerdoivform">
+                <p:dataTable id="table" var="kerdoiv"
+                             value="#{kerdoivController.kerdoivLista}" 
+                             selectionMode="single"
+                             editable="true"
+                             selection="#{kerdoivController.kivalasztottKerdoiv}"
+                             rowKey="#{kerdoiv.id}">
+                    <p:ajax event="rowSelect" listener="#{kerdoivController.onRowSelect}" 
+                            update=":msgs :kf:kerdes_table :kerdoivform:kerdoiv_torles :kf:uj_kerdes :kf:kerdes_torles"/>
+                    <p:ajax event="rowEdit" listener="#{kerdoivController.onRowEdit}" update=":msgs"/>
+                    <p:column style="width:2rem">
+                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                    </p:column>
+                    <p:column style="width:3rem">
+                        <f:facet name="header">#Id</f:facet>
+                        <h:outputText value="#{kerdoiv.id}" />
+                        
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Cim</f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{kerdoiv.title}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText id="modelInput" value="#{kerdoiv.title}" style="width:100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                </p:dataTable>
+                <p:commandButton value="Új kérdőív" action="#{kerdoivController.ujKerdoiv()}" update=":kerdoivform:table"/>
+                <p:commandButton id="kerdoiv_torles" value="Kiválasztott kérdőív törlése" action="#{kerdoivController.deleteKerdoiv()}" 
+                                 update=":kerdoivform :kf:uj_kerdes"
+                                 disabled="#{kerdoivController.kerdoivTorlesDisabled}"/>
+            </h:form>    
+        </p:panel>
+        
+        <p:panel header="Kerdesek Listaja" id="list_kerdes">
+            <h:form id="kf">
+                <p:dataTable id="kerdes_table" var="kerdes"
+                             value="#{kerdoivController.kerdesLista}" 
+                             selectionMode="single"
+                             editable="true"
+                             selection="#{kerdoivController.kivalasztottKerdes}"
+                             rowKey="#{kerdes.id}"
+                             emptyMessage="Nincs megjelenítendő kérdés">
+                    <p:ajax event="rowSelect"  update=":msgs :kf:kerdes_torles"/>
+                    <p:ajax event="rowEdit" listener="#{kerdoivController.onKerdesRowEdit}" update=":msgs :kf:kerdes_table"/>
+                    <p:column style="width:2rem">
+                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                    </p:column>
+                    <p:column style="width:3rem">
+                        <f:facet name="header">#Id</f:facet>
+                        <h:outputText value="#{kerdes.id}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Cim</f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{kerdes.kerdesSzoveg}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText id="kerdes_edit" value="#{kerdes.kerdesSzoveg}" style="width:100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                        
+                    </p:column>
+                </p:dataTable>
+                <p:commandButton id="uj_kerdes" value="Új kérdés" action="#{kerdoivController.ujKerdes()}" update=":list_kerdes" disabled="#{kerdoivController.kerdoivTorlesDisabled}"/>
+                <p:commandButton id="kerdes_torles" value="Kiválasztott kérdés törlése" action="#{kerdoivController.deleteKerdes()}" disabled="#{kerdoivController.kerdesTorlesDisabled}"
+                                 update=":kf:kerdes_torles :kf:kerdes_table"/>
+            </h:form>    
+        </p:panel>
+
+    </ui:define>
+</ui:composition>
+</html>

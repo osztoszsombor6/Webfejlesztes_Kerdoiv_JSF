@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <p:growl id="msgs" showDetail="true" />
+        <p:panel header="Kitoltesek Listája" id="list_kitolt" toggleable="true">
+            <h:form id="kitform">
+                <p:dataTable id="table" var="kitoltes"
+                             value="#{kitoltesController.kitoltesLista}" 
+                             selectionMode="single"
+                             selection="#{kitoltesController.kivalasztottKitoltes}"
+                             rowKey="#{kitoltes.id}">
+                    <p:ajax event="rowSelect"
+                            update=":kitform:table :valform:table2"/>
+                    <p:column style="width:3rem">
+                        <f:facet name="header">#Id</f:facet>
+                        <h:outputText value="#{kitoltes.id}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Kérdőív Cim</f:facet>
+                        <h:outputText value="#{kitoltes.kerdoiv.title}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Kitöltés Dátuma</f:facet>
+                        <h:outputText value="#{kitoltes.kitoltesDatum}" />
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>    
+        </p:panel>
+        
+        <p:panel header="Válaszok Listája" id="list_valasz">
+            <h:form id="valform">
+                <p:dataTable id="table2" var="valasz"
+                             value="#{kitoltesController.kivalasztottKitoltes.valaszok}" 
+                             emptyMessage="Nincs megjelenítendő válasz">
+                    <p:column style="width:3rem">
+                        <f:facet name="header">#Id</f:facet>
+                        <h:outputText value="#{valasz.id}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Kérdés</f:facet>
+                        <h:outputText value="#{valasz.kerdes.kerdesSzoveg}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Válasz</f:facet>
+                        <h:outputText value="#{valasz.valaszSzoveg}" />
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>    
+        </p:panel>
+        
+
+    </ui:define>
+</ui:composition>
+</html>
